@@ -1,0 +1,11 @@
+*.asv
+*.mex*
+*.mlappinstall
+*.mltbx
+*.mat
+helpsearch*/
+slprj/
+sccprj/
+codegen/
+*.autosave
+octave-workspace
