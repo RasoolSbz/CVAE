@@ -1,0 +1,7 @@
+link to keras model :
+https://github.com/tobiagru/Deep-3D-Obj-Recognition
+
+original paper:
+https://ieeexplore.ieee.org/abstract/document/7353481/
+
+title: Voxnet: A 3d convolutional neural network for real-time object recognition

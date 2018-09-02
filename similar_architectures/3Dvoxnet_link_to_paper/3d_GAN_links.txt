@@ -1,0 +1,8 @@
+keras code from : 
+https://github.com/svalleco/3Dgan/tree/master/keras
+
+original paper:
+http://papers.nips.cc/paper/6096-learning-a-probabilistic-latent-space-of-object-shapes-via-3d-generative-adversarial-modeling
+
+title: 
+Learning a probabilistic latent space of object shapes via 3d generative-adversarial modeling
