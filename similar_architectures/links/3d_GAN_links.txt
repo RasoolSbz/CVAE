@@ -6,3 +6,5 @@ http://papers.nips.cc/paper/6096-learning-a-probabilistic-latent-space-of-object
 
 title: 
 Learning a probabilistic latent space of object shapes via 3d generative-adversarial modeling
+
+- also there are python code for visualization there
