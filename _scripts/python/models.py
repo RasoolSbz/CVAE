@@ -12,7 +12,7 @@ import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 # ------------------------------------------------------------------------------
-def get_mrSabzi_net(number_of_channels, patch_height, patch_width, dropout_ratio, learning_rate, net_optimizer, loss_fcn):
+def get_mrSabzi_net(?):
 # ------------------------------------------------------------------------------
     def vae_loss(y_true, y_pred):
       recon = K.sum(K.binary_crossentropy(y_true, y_pred), axis=-1)

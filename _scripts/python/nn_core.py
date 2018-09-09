@@ -2,8 +2,8 @@ import os
 import sys
 # import cv2
 import h5py
-import glob
-import itertools
+#import glob
+#import itertools
 import scipy.misc
 import scipy.io as sio
 import skimage.io
@@ -17,7 +17,7 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras.utils.np_utils import to_categorical
 from keras.utils.vis_utils import plot_model as plot
 from sklearn.metrics import average_precision_score, recall_score, f1_score
-import models, paths, patches, performance
+import models, paths, performance
 
 sys.path.insert(0, './lib/')
 
@@ -71,13 +71,9 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
        training_voxels = tmp_file.get('modelNet_data_X_vox')
        training_voxels = np.transpose(training_voxels)
        training_voxels = np.transpose(training_voxels, (0, 3, 1, 2))
-       # patches_image = np.transpose(patches_image, (3, 0, 1, 2))
        training_voxels = np.array(training_voxels, dtype = '<f8')
-       # = patches_image[0:samples_split] / 255
-       #patches_image_test = patches_image[samples_split:] / 255
        print('[INFO] training voxel size: ', training_voxels.shape)
     
-       # number_of_patches = patches_image_train.shape[0]
        voxel_depth = training_voxels.shape[1]
        voxel_height = training_voxels.shape[2]
        voxel_width = training_voxels.shape[3]
@@ -86,8 +82,6 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
        training_2dimage = tmp_file.get('modelNet_data_X_2d')
        training_2dimage = np.transpose(training_2dimage)
        training_2dimage = np.array(training_2dimage, dtype = '<f8')
-#       patches_class_train = to_categorical(patches_class[0:samples_split], num_classes = 2)
-#       patches_class_test = to_categorical(patches_class[samples_split:], num_classes = 2)
        print('[INFO] training 2D image size: ', training_2dimage.shape)
 
 
