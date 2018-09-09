@@ -69,9 +69,10 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
    if dataset == 'Modelnet10':
        tmp_file = h5py.File(os.path.join(data_directory, 'modelNet_data_X_vox_train_10class.mat'))
        training_voxels = tmp_file.get('modelNet_data_X_vox')
-       training_voxels = np.transpose(training_voxels)
-       training_voxels = np.transpose(training_voxels, (0, 3, 1, 2))
+#       training_voxels = np.transpose(training_voxels)
+#       training_voxels = np.transpose(training_voxels, (0, 3, 1, 2))
        training_voxels = np.array(training_voxels, dtype = '<f8')
+       training_voxels = np.expand_dims(training_voxels, axis=4)
        print('[INFO] training voxel size: ', training_voxels.shape)
     
        voxel_depth = training_voxels.shape[1]
@@ -80,8 +81,9 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
     
        tmp_file = h5py.File(os.path.join(data_directory, 'modelNet_data_X_2d_train_10class.mat'))
        training_2dimage = tmp_file.get('modelNet_data_X_2d')
-       training_2dimage = np.transpose(training_2dimage)
+#       training_2dimage = np.transpose(training_2dimage)
        training_2dimage = np.array(training_2dimage, dtype = '<f8')
+       training_2dimage = np.expand_dims(training_2dimage, axis=3)
        print('[INFO] training 2D image size: ', training_2dimage.shape)
 
 
@@ -114,8 +116,9 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
        mode = 'auto', \
        save_best_only = True) # save at each epoch if the validation decreased
    model.fit(
-       training_voxels, \
-       training_2dimage, \
+       [training_voxels, \
+       training_2dimage], \
+        training_voxels, \
        nb_epoch = number_of_epochs, \
        batch_size = batch_size, \
        verbose = 1, \
@@ -133,9 +136,10 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
    if dataset == 'Modelnet10':
        tmp_file = h5py.File(os.path.join(data_directory, 'modelNet_data_X_vox_test_10class.mat'))
        test_voxels = tmp_file.get('modelNet_data_X_vox')
-       test_voxels = np.transpose(test_voxels)
-       test_voxels = np.transpose(test_voxels, (0, 3, 1, 2))
+#       test_voxels = np.transpose(test_voxels)
+#       test_voxels = np.transpose(test_voxels, (0, 3, 1, 2))
        test_voxels = np.array(test_voxels, dtype = '<f8')
+       test_voxels = np.expand_dims(test_voxels, axis=4)
        print('[INFO] test voxel size: ', test_voxels.shape)
     
        voxel_depth = test_voxels.shape[1]
@@ -144,8 +148,9 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
     
        tmp_file = h5py.File(os.path.join(data_directory, 'modelNet_data_X_2d_test_10class.mat'))
        test_2dimage = tmp_file.get('modelNet_data_X_2d')
-       test_2dimage = np.transpose(test_2dimage)
+#       test_2dimage = np.transpose(test_2dimage)
        test_2dimage = np.array(test_2dimage, dtype = '<f8')
+       test_2dimage = np.expand_dims(test_2dimage, axis=3)
        print('[INFO] test 2D image size: ', test_2dimage.shape)
 
    voxel_preds_test, TP, FP, TN, FN = evaluateResults(saved_model, test_2dimage, test_voxels, debug_flag = True)
