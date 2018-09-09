@@ -1,6 +1,4 @@
 import nn_core
-import gpu
-gpu.setGPU(0)
 
 dataset = 'Modelnet10'
 network_type = 'mrSabzi'

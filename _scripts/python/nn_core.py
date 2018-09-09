@@ -98,7 +98,7 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
 
    else:
 
-     model = model_loader(voxel_depth, voxel_height, voxel_width, dropout_ratio, learning_rate, net_optimizer, loss_fcn)
+     model = model_loader()#(voxel_depth, voxel_height, voxel_width, dropout_ratio, learning_rate, net_optimizer, loss_fcn)
 
      print('[INFO] network input size: ', model.input_shape)
      print('[INFO] network output size: ', model.output_shape)

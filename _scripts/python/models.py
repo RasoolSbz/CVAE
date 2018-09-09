@@ -12,7 +12,7 @@ import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 # ------------------------------------------------------------------------------
-def get_mrSabzi_net(?):
+def get_mrSabzi_net():
 # ------------------------------------------------------------------------------
     def vae_loss(y_true, y_pred):
       recon = K.sum(K.binary_crossentropy(y_true, y_pred), axis=-1)
@@ -114,7 +114,7 @@ def get_mrSabzi_net(?):
 #    d_out = Decoder3D(d_in,decoder3D_dense_shape,decoder3D_reshape_shape)
 #    decoder = Model(d_in, d_out)
 #                                                               
-#    cvae.compile(optimizer='Adam', loss=vae_loss, metrics = [KL_loss, recon_loss])
+    cvae.compile(optimizer='Adam', loss=vae_loss, metrics = [KL_loss, recon_loss])
 #    cvae.summary()
 #    
 #    cvae.save('cvae.h5')
