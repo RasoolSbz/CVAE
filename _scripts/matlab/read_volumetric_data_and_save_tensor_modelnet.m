@@ -2,9 +2,9 @@ data_directory_vol = 'E:\thesis_phd\msSabzi\CVAE_inverse_rendering\volumetric_da
 folders_common_between_off_and_vol = dir(data_directory_vol);
 
 data_directory_off = 'E:\thesis_phd\msSabzi\ModelNet10';
-training_count = 1;
-test_count = 1;
-for i = 3 : length(folders_common_between_off_and_vol)
+% training_count = 1;
+% test_count = 1;
+for i = 4 : length(folders_common_between_off_and_vol)
     training_vol_files_path = [data_directory_vol,'\' , folders_common_between_off_and_vol(i).name , '\32\train\'];
     test_vol_files_path = [data_directory_vol ,'\', folders_common_between_off_and_vol(i).name , '\32\test\'];
     
@@ -17,13 +17,15 @@ for i = 3 : length(folders_common_between_off_and_vol)
     
     for j = 3 : length(training_files)
         
-        fprintf('[INFO] reading training voxel %d of %d from folder %s \n' , j ,length(training_data_images),[folders_common_between_off_and_vol(i).name , '/32/train/'] );
+        fprintf('[INFO] reading training voxel %d of %d from folder %s \n' , j ,length(training_files),[folders_common_between_off_and_vol(i).name , '/32/train/'] );
         tmp = importdata([training_vol_files_path , training_files(j).name]);
 %         figure; visualize_voxel(tmp);
         
         
-        fprintf('[INFO] reading training off %d of %d from folder %s \n' , j ,length(training_data_images),[folders_common_between_off_and_vol(i).name , '/train/'] );
-        [vertex,face] = read_off([training_off_files_path, training_files(j).name]);
+        fprintf('[INFO] reading training off %d of %d from folder %s \n' , j ,length(training_files),[folders_common_between_off_and_vol(i).name , '/train/'] );
+        tmpstr = training_files(j).name(1:end-3);
+        tmpstr = [tmpstr , 'off'];
+        [vertex,face] = read_off([training_off_files_path, tmpstr]);
         
         for g = 1 : 8 % 8 view point for eah sample
             figure;plot3dFace_shape(struct('shape' , vertex') , face');
@@ -54,12 +56,13 @@ for i = 3 : length(folders_common_between_off_and_vol)
     end
     for j = 3 : length(test_files)
         fprintf('[INFO] reading test voxel %d of %d from folder %s ' , j ,length(test_files),[folders_common_between_off_and_vol(i).name , '/32/test/'] );
-        tmp = importdata([test_vol_files , test_vol_files(j).name]);
-        modelnet_test_data_voxels(:,:,:,test_count) = tmp;
+        tmp = importdata([test_vol_files_path , test_files(j).name]);
         
         
         fprintf('[INFO] reading test off %d of %d from folder %s \n' , j ,length(test_files),[folders_common_between_off_and_vol(i).name , '/test/'] );
-        [vertex,face] = read_off([test_off_files_path, test_files(j).name]);
+        tmpstr = test_files(j).name(1:end-3);
+        tmpstr = [tmpstr , 'off'];
+        [vertex,face] = read_off([test_off_files_path, tmpstr]);
         
         for g = 1 : 8 % 8 view point for eah sample
             figure;plot3dFace_shape(struct('shape' , vertex') , face');
@@ -85,3 +88,7 @@ for i = 3 : length(folders_common_between_off_and_vol)
         end
     end
 end
+save modelNet_training_data_X_2d_32 modelNet_training_data_X_2d_32 -v7.3
+save modelnet_training_data_voxels_32 modelnet_training_data_voxels_32 -v7.3
+save modelNet_test_data_X_2d_32 modelNet_test_data_X_2d_32 -v7.3
+save modelnet_test_data_voxels_32 modelnet_test_data_voxels_32 -v7.3

@@ -17,13 +17,15 @@ for i = 3 : length(folders_common_between_off_and_vol)
     
     for j = 3 : length(training_files)
         
-        fprintf('[INFO] reading training voxel %d of %d from folder %s \n' , j ,length(training_data_images),[folders_common_between_off_and_vol(i).name , '/32/train/'] );
+        fprintf('[INFO] reading training voxel %d of %d from folder %s \n' , j ,length(training_files),[folders_common_between_off_and_vol(i).name , '/32/train/'] );
         tmp = importdata([training_vol_files_path , training_files(j).name]);
 %         figure; visualize_voxel(tmp);
         
         
-        fprintf('[INFO] reading training off %d of %d from folder %s \n' , j ,length(training_data_images),[folders_common_between_off_and_vol(i).name , '/train/'] );
-        [vertex,face] = read_off([training_off_files_path, training_files(j).name]);
+        fprintf('[INFO] reading training off %d of %d from folder %s \n' , j ,length(training_files),[folders_common_between_off_and_vol(i).name , '/train/'] );
+        tmpstr = training_files(j).name(1:end-3);
+        tmpstr = [tmpstr , 'off'];
+        [vertex,face] = read_off([training_off_files_path, tmpstr]);
         
         for g = 1 : 8 % 8 view point for eah sample
             figure;plot3dFace_shape(struct('shape' , vertex') , face');
@@ -54,12 +56,14 @@ for i = 3 : length(folders_common_between_off_and_vol)
     end
     for j = 3 : length(test_files)
         fprintf('[INFO] reading test voxel %d of %d from folder %s ' , j ,length(test_files),[folders_common_between_off_and_vol(i).name , '/32/test/'] );
-        tmp = importdata([test_vol_files , test_vol_files(j).name]);
+        tmp = importdata([test_vol_files_path , test_vol_files(j).name]);
         modelnet_test_data_voxels(:,:,:,test_count) = tmp;
         
         
         fprintf('[INFO] reading test off %d of %d from folder %s \n' , j ,length(test_files),[folders_common_between_off_and_vol(i).name , '/test/'] );
-        [vertex,face] = read_off([test_off_files_path, test_files(j).name]);
+        tmpstr = test_files(j).name(1:end-3);
+        tmpstr = [tmpstr , 'off'];
+        [vertex,face] = read_off([test_off_files_path, tmpstr]);
         
         for g = 1 : 8 % 8 view point for eah sample
             figure;plot3dFace_shape(struct('shape' , vertex') , face');
@@ -83,38 +87,5 @@ for i = 3 : length(folders_common_between_off_and_vol)
             test_count = test_count + 1;
             close all;
         end
-        training_count = test_count + 1;
     end
 end
-
-
-folders_off = {'bathtub/train/' , 'bed/train/' , 'chair/train/' , 'desk/train/' , 'dresser/train/' , 'monitor/train/' , 'night/stand/train/' , 'sofa/train/' , 'table/train/' , 'toilet/train/'}; % {'airplane/train/','bed/train/' , 'bathtub/train' , 'bench/train' , 'bottle/train' , 'bowl/train' , 'car/train' , 'chair/train' , 'desk/train' , 'monitor/train'};%,'bed/train/','bench/train/','bookshelf/train/'};
-img_count = 1;
-for o = 3 : length(folders_off)
-    file_list = dir(['E:\thesis_phd\msSabzi\ModelNet10\' , folders_off{o}]);
-    for i = 3 : size(file_list , 1)
-        [vertex,face] = read_off([folders_off{o} , file_name]);
-        for g = 1 : 8 % 8 view point for eah sample
-            figure;plot3dFace_shape(struct('shape' , vertex') , face');
-            view(g*(180/8) , 45);
-            axis off;
-            colorbar off
-            saveas(gcf,'temp.png')
-            input_image = double(rgb2gray(imread('temp.png')));
-            input_image = input_image / 255;
-            [tx , ty] = find( input_image ~= 1);
-            cropped_input_image = input_image;
-            cropped_input_image(: , 1:min(ty)) = [];
-            cropped_input_image(: , max(ty)-min(ty):end) = [];
-            cropped_input_image(1:min(tx), :) = [];
-            cropped_input_image(max(tx)-min(tx):end, :) = [];
-            cropped_input_image = imresize(cropped_input_image , [32 , 32]);
-            cropped_input_image = 1 - cropped_input_image;
-            figure;imshow(cropped_input_image);
-            modelNet_training_data_X_2d_32(: , : , img_count) = cropped_input_image;
-            img_count = img_count + 1;
-            close all;
-        end
-    end
-end
-
