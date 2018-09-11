@@ -1,0 +1,10 @@
+*.mat
+*DS_Store
+*.h5
+*.asv
+*.pyc
+*.hdf5
+*DS_Store
+100*/
+_other_scripts/unet/**/*png
+_other_scripts/unet/**/*jpg
