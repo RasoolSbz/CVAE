@@ -83,40 +83,41 @@ def Decoder3D(latent_output,decoder3D_dense_shape,decoder3D_reshape_shape):
   conv=Conv3D(1, (3, 3, 3),kernel_initializer = 'he_normal',padding='same',activation='sigmoid',name='3D_conv_output')(conv)
   return conv
 
-input3D_shape=(32,32,32,1)
-input2D_shape=(32,32,1)
-output2D_dim=32
-output3D_dim=32
-latent_dim = 10
-decoder3D_dense_shape=(4*4*4*64)
-decoder3D_reshape_shape=(4,4,4,64)
-batch_size=16
+def CVAE_Model(Optimizer,batch_size=16,lr=0.01,dim_size=32):
+  input3D_shape=(dim_size,dim_size,dim_size,1)
+  input2D_shape=(dim_size,dim_size,1)
+  output2D_dim=32
+  output3D_dim=32
+  latent_dim = 10
+  decoder3D_dense_shape=(4*4*4*64)
+  decoder3D_reshape_shape=(4,4,4,64)
 
-input_3d=Input(input3D_shape,name='3D_Encoder_input')
-input_2d=Input(input2D_shape,name='2D_Encoder_input')
+  input_3d=Input(input3D_shape,name='3D_Encoder_input')
+  input_2d=Input(input2D_shape,name='2D_Encoder_input')
 
-Code_3d=Encoder3D(input_3d,output3D_dim)
-Code_2d=Encoder2D(input_2d,output2D_dim)
+  Code_3d=Encoder3D(input_3d,output3D_dim)
+  Code_2d=Encoder2D(input_2d,output2D_dim)
 
-inputs = concat([Code_3d, Code_2d],name='input_concat')
+  inputs = concat([Code_3d, Code_2d],name='input_concat')
 
-encoder = Dense(512, activation='relu',name='encoder_dense')(inputs)
-mu = Dense(latent_dim, activation='linear',name='mu')(encoder)
-sigma = Dense(latent_dim, activation='linear',name='sigma')(encoder)
-latent = Lambda(sampling, output_shape = (latent_dim, ),name='latent')([mu, sigma])
-latent_concat = concat([latent, Code_2d],name='latent_concat')
-output = Decoder3D(latent_concat,decoder3D_dense_shape,decoder3D_reshape_shape)
+  encoder = Dense(512, activation='relu',name='encoder_dense')(inputs)
+  mu = Dense(latent_dim, activation='linear',name='mu')(encoder)
+  sigma = Dense(latent_dim, activation='linear',name='sigma')(encoder)
+  latent = Lambda(sampling, output_shape = (latent_dim, ),name='latent')([mu, sigma])
+  latent_concat = concat([latent, Code_2d],name='latent_concat')
+  output = Decoder3D(latent_concat,decoder3D_dense_shape,decoder3D_reshape_shape)
 
-cvae = Model([input_3d, input_2d], output)
+  cvae = Model([input_3d, input_2d], output)
 
-encoder = Model([input_3d, input_2d], mu)
+  encoder = Model([input_3d, input_2d], mu)
 
-d_in = Input(shape=(latent_dim+output2D_dim,))
-d_out = Decoder3D(d_in,decoder3D_dense_shape,decoder3D_reshape_shape)
-decoder = Model(d_in, d_out)
-                                                               
-cvae.compile(optimizer='Adam', loss=vae_loss, metrics = [KL_loss, recon_loss])
-cvae.summary()
+  d_in = Input(shape=(latent_dim+output2D_dim,))
+  d_out = Decoder3D(d_in,decoder3D_dense_shape,decoder3D_reshape_shape)
+  decoder = Model(d_in, d_out)
 
-cvae.save('cvae.h5')
-UploadToDrive('cvae.h5')
+  Optimizer.lr=lr                                                          
+  cvae.compile(optimizer=Optimizer, loss=vae_loss, metrics = [KL_loss, recon_loss])
+  cvae.summary()
+
+  #cvae.save('cvae.h5')
+  return cvae

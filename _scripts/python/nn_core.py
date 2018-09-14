@@ -53,20 +53,20 @@ def evaluateResults(model, test_2dimage, test_voxels, debug_flag=False):
 def getExperimentName(dataset, network_type, image_size):
   return '%s_cvae_%s_class_%d' % (network_type, dataset, image_size)
 
-def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_model, number_of_epochs, batch_size, dropout_ratio, learning_rate, net_optimizer, loss_fcn):
+def trainAndEvaluate(Args):
 
    # ============================================================================
    #                                                                        Meta
    # ============================================================================
-   experiment_name = getExperimentName(dataset, network_type, image_size)
-   model_weights_path = paths.getModelWeightsDirectory(username)
-   data_directory = paths.getDatasetDirectory(username)
+   experiment_name = getExperimentName(Args["dataset"], Args["network_type"], Args["image_size"])
+   model_weights_path = paths.getModelWeightsDirectory(Args["username"])
+   data_directory = paths.getDatasetDirectory(Args["username"])
 
 
    # ============================================================================
    #                                        Load the data and divided in patches
    # ============================================================================
-   if dataset == 'Modelnet10':
+   if Args["dataset"] == 'Modelnet10':
        tmp_file = h5py.File(os.path.join(data_directory, 'modelNet_data_X_vox_train_10class.mat'))
        training_voxels = tmp_file.get('modelNet_data_X_vox')
 #       training_voxels = np.transpose(training_voxels)
@@ -90,11 +90,11 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
    # ============================================================================
    #                                     Construct or load the model arcitecture
    # ============================================================================
-   if network_type == 'mrSabzi':
+   if Args["network_type"] == 'mrSabzi':
      model_loader = models.get_mrSabzi_net
    
 
-   if load_saved_model:
+   if Args["load_saved_model"]:
 
       model = load_model(model_weights_path + '/' + 'saved_model_%s.h5' % (experiment_name))
 
@@ -119,8 +119,8 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
        [training_voxels, \
        training_2dimage], \
         training_voxels, \
-       nb_epoch = number_of_epochs, \
-       batch_size = batch_size, \
+       nb_epoch = Args["number_of_epochs"], \
+       batch_size = Args["batch_size"], \
        verbose = 1, \
        shuffle = True, \
        validation_split = 0.1, \
@@ -133,7 +133,7 @@ def trainAndEvaluate(username ,dataset, network_type, image_size, load_saved_mod
    # ============================================================================
    #                                                       Testing & Performance
    # ============================================================================
-   if dataset == 'Modelnet10':
+   if Args["dataset"] == 'Modelnet10':
        tmp_file = h5py.File(os.path.join(data_directory, 'modelNet_data_X_vox_test_10class.mat'))
        test_voxels = tmp_file.get('modelNet_data_X_vox')
 #       test_voxels = np.transpose(test_voxels)
